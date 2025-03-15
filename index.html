@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://0xc0ba1t.github.io" />
+    <meta property="og:title" content="c0ba1t(1)" />
+    <meta
+      property="og:description"
+      content="Personal website of Aditya Patil <0xc0ba1t>"
+    />
+    <meta property="og:image" content="img/crow.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>c0ba1t(1)</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Roboto Mono", monospace;
+        font-size: 1em;
+        background-color: #1a1c20;
+        filter: invert(100%);
+      }
+      @keyframes intro {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      div.main {
+        animation: intro 0.3s both;
+        animation-delay: 0.15s;
+      }
+      div.help {
+        animation: intro 0.3s both;
+        animation-delay: 0.15s;
+        display: none;
+      }
+      a:hover {
+        background-color: #1a1c20;
+        color: #fff;
+      }
+      div.container {
+        max-width: 45em;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        font-size: 1em;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      .command,
+      .argument {
+        font-weight: bold;
+      }
+      div.container div h1 {
+        font-weight: normal;
+      }
+      div,
+      p.indented {
+        margin-bottom: 1em;
+      }
+      div.section div {
+        margin-left: 4em;
+      }
+      p.indented {
+        margin-left: 2em;
+      }
+      a {
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      ::-moz-selection {
+        color: #e5e3df;
+        background: #1a1c20;
+      }
+      ::selection {
+        color: #e5e3df;
+        background: #1a1c20;
+      }
+      footer {
+        background-color: #1a1c20;
+        color: white;
+        text-align: left;
+        padding: 1px;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        z-index: 1;
+        max-width: 45em;
+        margin: 0 auto;
+        animation: intro 0.3s both;
+        animation-delay: 0.15s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container help" id="helpContainer">
+      <div class="section">
+        <h2>KEY BINDINGS</h2>
+        <div>
+          <p>h &nbsp;&nbsp; show help</p>
+          <p>q &nbsp;&nbsp; go back</p>
+          <p>j &nbsp;&nbsp; scroll up</p>
+          <p>k &nbsp;&nbsp; scroll down</p>
+          <p>gg &nbsp; scroll to top</p>
+          <p>G &nbsp;&nbsp; scroll bottom</p>
+          <p>1-9&nbsp; relative movements</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>SOURCE</h2>
+        <div>
+          <p>
+            <a href="https://github.com/0xC0ba1t/0xc0ba1t.github.io" target="_blank"
+              >https://github.com/0xC0ba1t/0xc0ba1t.github.io</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container main" id="mainContainer">
+      <div class="section">
+        <h2>NAME</h2>
+        <div>
+          <p>c0ba1t — Aditya Patil</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>SYNOPSIS</h2>
+        <div>
+          <p>
+            <span class="command"
+              ><a href="https://github.com/0xC0ba1t/" target="_blank"
+                >c0ba1t</a
+              ></span
+            >
+            [<span class="argument">OPTIONS</span>]
+          </p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>DESCRIPTION</h2>
+        <div>
+          <p>
+            Hey! I'm a low-level sw / hw enthusiast, cybersecurity, ml, and graphics student.
+            I work in rust, and many others, including python.
+            Once in a while I do some ML stuff, usually in PyTorch.
+          </p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>OPTIONS</h2>
+        <div>
+          <h3><a href="/hey" target="_blank">--hey</a></h3>
+          <p class="indented">Sends magic bytes for communication</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>PROJECTS</h2>
+        <div>
+          <p>
+            <a href="https://github.com/0xC0ba1t/zero" target="_blank">zero</a>,
+            <a href="https://github.com/0xC0ba1t/prettyprint" target="_blank">prettyprint</a>,
+            <a href="https://github.com/0xC0ba1t/SnapdragonLLM" target="_blank">SnapdragonLLM</a>,
+            <a href="https://github.com/0xC0ba1t/conway" target="_blank">conway</a>,
+          </p>
+          <p>
+            <a href="https://github.com/trrsrobotics/Singularity" target="_blank">singularity</a>,
+          </p>
+
+          <br />
+          <h3>NOTE</h3>
+          <p class="indented">
+            Vist my GitHub "<i>profile</i>"<br />
+            to browse all my projects!
+          </p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>SUPPORTED EXTENSIONS</h2>
+        <div>
+          <p>*.sh, *.c, *.rs, *.cpp</p>
+          <p>*.go, *.py, *.js, *.html</p>
+          <p>*.css, *.ts, *.asm, *.ps1, *.md</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>ENVIRONMENT VARIABLES</h2>
+        <div>
+          <h3>LANG</h3>
+          <p class="indented">en_US.utf-8, tr_TR.utf-8</p>
+          <h3>PGP_KEY</h3>
+          <p class="indented">
+            <a href="https://github.com/0xC0ba1t.gpg" target="_blank"
+              >0x556C1CB50E950364</a
+            >
+          </p>
+          <h3>CONFIG</h3>
+          <p class="indented">
+            not found
+          </p>
+          <h3>CONTENT</h3>
+          <p class="indented">
+            <a href="https://github.com/0xC0ba1t" target="_blank">github</a>,
+          </p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>SEE ALSO</h2>
+        <div>
+          <p>
+            <a href="mailto:73546596+0xC0ba1t@users.noreply.github.com" target="_blank">email</a
+            >(4),
+            <a href="https://www.linkedin.com/" target="_blank"
+              >linkedin</a
+            >(4),
+          </p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>KNOWN BUGS</h2>
+        <div>
+          <p>flawed person :D</p>
+        </div>
+      </div>
+    </div>
+    <footer id="line-counter">&nbsp;Manual page c0ba1t(1) 0%</footer>
+    <script src="script.js"></script>
+  </body>
+</html>
