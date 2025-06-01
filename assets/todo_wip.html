@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To Do! Coming Soon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: black;
+  color: #33ff33;
+  font-family: 'VT323', monospace;
+  overflow: hidden;
+}
+
+canvas#static-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  opacity: 0.25; /* Stronger visibility */
+  image-rendering: pixelated;
+}
+
+.glitch {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.08) 0,
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: opacity 0.1s;
+  z-index: 999;
+}
+
+.center-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: left;
+  width: 90vw;
+  max-width: 600px;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 1.5rem;
+  border: 1px solid #33ff33;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(51, 255, 51, 0.4);
+  line-height: 1.6;
+  font-size: clamp(1rem, 3vw, 2rem);
+}
+
+.center-message h1 {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin-bottom: 1rem;
+}
+
+.center-message p {
+  display: inline;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1em;
+  background-color: #33ff33;
+  margin-left: 5px;
+  vertical-align: bottom;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.too-small {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'VT323', monospace;
+  color: red;
+  background: black;
+  border: 2px solid red;
+  padding: 2rem;
+  font-size: 1.5rem;
+  z-index: 1000;
+}
+
+@media (max-width: 300px), (max-height: 250px) {
+  .center-message {
+    display: none;
+  }
+  .too-small {
+    display: block;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <canvas id="static-bg"></canvas>
+  <div class="glitch" id="glitch"></div>
+  <div class="center-message">
+    <h1>To Do!</h1>
+    <p>This page doesn’t exist (yet) — it’s on the list</p><div class="cursor"></div>
+  </div>
+  <div class="too-small">
+    [ ERROR ] DISPLAY TOO SMALL — TRY BIGGER SCREEN
+  </div>
+  <script>
+    const canvas = document.getElementById('static-bg');
+    const ctx = canvas.getContext('2d');function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function drawStatic() {
+  const imageData = ctx.createImageData(canvas.width, canvas.height);
+  const buffer = imageData.data;
+  for (let i = 0; i < buffer.length; i += 4) {
+    const val = Math.random() * 180 + 40; // Stronger brighter static
+    buffer[i] = buffer[i + 1] = buffer[i + 2] = val;
+    buffer[i + 3] = 255;
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
+function animateStatic() {
+  drawStatic();
+  requestAnimationFrame(animateStatic);
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+animateStatic();
+
+// Glitch flash
+const glitch = document.getElementById('glitch');
+document.addEventListener('click', () => {
+  glitch.style.opacity = '1';
+  setTimeout(() => (glitch.style.opacity = '0'), 100);
+});
+
+  </script>
+</body>
+</html>
