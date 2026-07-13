@@ -17,7 +17,7 @@ function handle_scroll() {
   let scroll_pos = window.scrollY;
   const line_counter = document.getElementById("line-counter");
   let scroll_percent = Math.ceil(calc_scroll_percent(scroll_pos));
-  if (scroll_percent == 100) {
+  if (scroll_percent >= 100) {
     line_counter.innerHTML = "&nbsp;Manual page c0ba1t(1) (END)";
     line_counter.style.filter = "invert(0%)";
   } else {

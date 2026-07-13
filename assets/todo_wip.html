@@ -1,301 +1,237 @@
-<!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>To Do! Coming Soon</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://c0ba1t.is-a.dev/todo" />
+    <meta property="og:title" content="todo :: c0ba1t(1)" />
+    <meta
+      property="og:description"
+      content="Work in progress — c0ba1t(1)"
+    />
+    <meta property="og:image" content="/img/crow.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-html, body {
-  width: 100%;
-  height: 100%;
-}
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="f5360d04-971f-4e6d-b944-55da2d649963"></script>
 
-body {
-  background: black;
-  color: #33ff33;
-  font-family: 'VT323', monospace;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-}
+    <title>todo :: c0ba1t(1)</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <style>
+      /* ===== identical design tokens to index.html — do not diverge ===== */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Roboto Mono", monospace;
+        font-size: 1em;
+        background-color: #1a1c20;
+        filter: invert(100%);
+      }
+      @keyframes intro {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      div.main {
+        animation: intro 0.3s both;
+        animation-delay: 0.15s;
+      }
+      a:hover {
+        background-color: #1a1c20;
+        color: #fff;
+      }
+      div.container {
+        max-width: 45em;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        font-size: 1em;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      .command,
+      .argument {
+        font-weight: bold;
+      }
+      div.container div h1 {
+        font-weight: normal;
+      }
+      div,
+      p.indented {
+        margin-bottom: 1em;
+      }
+      div.section div {
+        margin-left: 4em;
+      }
+      p.indented {
+        margin-left: 2em;
+      }
+      a {
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      ::-moz-selection {
+        color: #e5e3df;
+        background: #1a1c20;
+      }
+      ::selection {
+        color: #e5e3df;
+        background: #1a1c20;
+      }
+      footer {
+        background-color: #1a1c20;
+        color: white;
+        text-align: left;
+        padding: 1px;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        z-index: 1;
+        max-width: 45em;
+        margin: 0 auto;
+        animation: intro 0.3s both;
+        animation-delay: 0.15s;
+      }
 
-canvas#static-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -4;
-  opacity: 0.25;
-  image-rendering: pixelated;
-}
+      /* ===== additions scoped to this page only ===== */
+      .typed-line {
+        white-space: pre-wrap;
+      }
+      .cursor {
+        display: inline-block;
+        width: 0.5em;
+        height: 1em;
+        background-color: black;
+        margin-left: 2px;
+        vertical-align: text-bottom;
+        animation: blink 1s steps(2, start) infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .reveal {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container main" id="mainContainer">
+      <div class="section">
+        <h2>NAME</h2>
+        <div>
+          <p>todo — page under construction</p>
+        </div>
+      </div>
 
-.crt-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9999;
-}
+      <div class="section">
+        <h2>STATUS</h2>
+        <div>
+          <p>WIP</p>
+        </div>
+      </div>
 
-.crt-scanline {
-  position: absolute;
-  top: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
-  animation: scanlineDown 3s linear infinite;
-}
+      <div class="section">
+        <h2>DESCRIPTION</h2>
+        <div>
+          <p class="typed-line" id="typedLine"><span id="typedText"></span><span class="cursor" id="typeCursor"></span></p>
+        </div>
+      </div>
 
-@keyframes scanlineDown {
-  0% { top: -2px; }
-  100% { top: 100%; }
-}
+      <div class="section reveal" id="seeAlso">
+        <h2>SEE ALSO</h2>
+        <div>
+          <p>
+            <a href="https://c0ba1t.is-a.dev/">home</a>(1)
+          </p>
+        </div>
+      </div>
 
-.glitch {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.08) 0,
-    rgba(255, 255, 255, 0.08) 1px,
-    transparent 1px,
-    transparent 4px
-  );
-  opacity: 0;
-  pointer-events: none;
-  mix-blend-mode: difference;
-  transition: opacity 0.1s;
-  z-index: 10000;
-}
+      <div class="section reveal" id="knownBugs">
+        <h2>KNOWN BUGS</h2>
+        <div>
+          <p>not a bug — just not built yet.</p>
+        </div>
+      </div>
+    </div>
+    <footer id="line-counter">&nbsp;Manual page todo(1) (END)</footer>
+    <script>
+      const lines = [
+        "man: this page is on the TODO list",
+        "Check back later, or see the home page below.",
+      ];
+      const typedText = document.getElementById("typedText");
+      const seeAlso = document.getElementById("seeAlso");
+      const knownBugs = document.getElementById("knownBugs");
 
-.center-message {
-  display: none;
-  width: 90vw;
-  max-width: 600px;
-  background-color: rgba(0, 0, 0, 0.9);
-  padding: 1.5rem;
-  border: 1px solid #33ff33;
-  border-radius: 8px;
-  box-shadow: 0 0 25px rgba(51, 255, 51, 0.4);
-  line-height: 1.6;
-  font-size: clamp(1rem, 3vw, 2rem);
-  text-align: left;
-  z-index: 10;
-}
+      let lineIndex = 0;
+      let charIndex = 0;
+      let buffer = "";
 
-.center-message h1 {
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
-  margin-bottom: 1rem;
-}
+      function typeStep() {
+        if (lineIndex >= lines.length) {
+          seeAlso.style.transition = "opacity 0.3s ease";
+          knownBugs.style.transition = "opacity 0.3s ease";
+          requestAnimationFrame(() => {
+            seeAlso.style.opacity = "1";
+            knownBugs.style.opacity = "1";
+          });
+          return;
+        }
+        const currentLine = lines[lineIndex];
+        if (charIndex <= currentLine.length) {
+          typedText.innerText = buffer + currentLine.slice(0, charIndex);
+          charIndex++;
+          setTimeout(typeStep, 28);
+        } else {
+          buffer += currentLine + "\n";
+          lineIndex++;
+          charIndex = 0;
+          setTimeout(typeStep, 350);
+        }
+      }
 
-.cursor {
-  display: inline-block;
-  width: 10px;
-  height: 1em;
-  background-color: #33ff33;
-  margin-left: 5px;
-  vertical-align: bottom;
-  animation: blink 1s steps(2, start) infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-.too-small {
-  display: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: 'VT323', monospace;
-  color: red;
-  background: black;
-  border: 2px solid red;
-  padding: 2rem;
-  font-size: 1.5rem;
-  z-index: 1000;
-  text-align: center;
-}
-
-@media (max-width: 300px), (max-height: 250px) {
-  .center-message,
-  .boot,
-  .typing,
-  .spinner {
-    display: none !important;
-  }
-  .too-small {
-    display: block;
-  }
-}
-
-.boot, .typing, .spinner {
-  position: absolute;
-  width: 90vw;
-  max-width: 800px;
-  white-space: pre-wrap;
-  padding: 1rem;
-  z-index: 1000;
-}
-
-.boot {
-  color: red;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  text-shadow: 0 0 2px red;
-  top: 5%;
-}
-
-.typing {
-  color: #33ff33;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  text-shadow: 0 0 2px #33ff33;
-  display: none;
-  top: 50%;
-}
-
-.spinner {
-  color: #33ff33;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  text-shadow: 0 0 2px #33ff33;
-  display: none;
-  top: 60%;
-}
-
-  </style>
-</head>
-<body>
-  <canvas id="static-bg"></canvas>
-  <div class="crt-overlay">
-    <div class="crt-scanline"></div>
-  </div>
-  <div class="glitch" id="glitch"></div>
-  <div class="boot" id="boot"></div>
-  <div class="typing" id="typing"><span id="typed-text"></span><span class="cursor"></span></div>
-  <div class="spinner" id="spinner"></div>
-  <div class="center-message" id="mainContent">
-    <h1>To Do!</h1>
-    <p>This page doesn’t exist (yet) — it’s on the list<span class="cursor"></span></p>
-  </div>
-  <div class="too-small">
-    [ ERROR ] DISPLAY TOO SMALL — TRY BIGGER SCREEN
-  </div>
-  <script>
-    const canvas = document.getElementById('static-bg');
-    const ctx = canvas.getContext('2d');function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-
-function drawStatic() {
-  const imageData = ctx.createImageData(canvas.width, canvas.height);
-  const buffer = imageData.data;
-  for (let i = 0; i < buffer.length; i += 4) {
-    const val = Math.random() * 120 + 30;
-    buffer[i] = buffer[i + 1] = buffer[i + 2] = val;
-    buffer[i + 3] = 255;
-  }
-  ctx.putImageData(imageData, 0, 0);
-}
-
-function animateStatic() {
-  drawStatic();
-  requestAnimationFrame(animateStatic);
-}
-
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-animateStatic();
-
-const glitch = document.getElementById('glitch');
-document.addEventListener('click', () => {
-  glitch.style.opacity = '1';
-  setTimeout(() => (glitch.style.opacity = '0'), 100);
-});
-
-const boot = document.getElementById('boot');
-const typing = document.getElementById('typing');
-const typedText = document.getElementById('typed-text');
-const spinner = document.getElementById('spinner');
-const main = document.getElementById('mainContent');
-
-const bootLines = [
-  "BOOTING SYSTEM...",
-  "[ OK ] Kernel loaded",
-  "[ OK ] Display drivers initialized",
-  "[ OK ] Audio device... not found",
-  "[ OK ] Memory check: 16MB available",
-  "[ WARN ] Task module not found",
-  "[ OK ] Fallback system loaded",
-  "LAUNCHING INTERFACE..."
-];
-
-let i = 0;
-function showBootLines() {
-  if (i < bootLines.length) {
-    boot.innerText += bootLines[i] + "\n";
-    i++;
-    setTimeout(showBootLines, 500);
-  } else {
-    setTimeout(() => {
-      boot.style.display = 'none';
-      startTyping();
-    }, 1000);
-  }
-}
-
-function startTyping() {
-  typing.style.display = 'block';
-  const command = "sudo ./todo.sh";
-  let j = 0;
-  const interval = setInterval(() => {
-    typedText.innerText = command.slice(0, j);
-    j++;
-    if (j > command.length) {
-      clearInterval(interval);
-      setTimeout(() => {
-        typing.style.display = 'none';
-        showSpinner();
-      }, 400);
-    }
-  }, 100);
-}
-
-function showSpinner() {
-  spinner.style.display = 'block';
-  spinner.textContent = "Launching ./todo.sh ⠋";
-  let frames = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
-  let frame = 0;
-  let spin = setInterval(() => {
-    spinner.textContent = `Launching ./todo.sh ${frames[frame % frames.length]}`;
-    frame++;
-  }, 100);
-  setTimeout(() => {
-    clearInterval(spin);
-    spinner.style.display = 'none';
-    main.style.display = 'block';
-  }, 1500);
-}
-
-showBootLines();
-
-  </script>
-</body>
+      setTimeout(typeStep, 300);
+    </script>
+  </body>
 </html>
