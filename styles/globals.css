@@ -1,0 +1,324 @@
+@import "tailwindcss";
+
+/* The site is always dark (every theme is). Aceternity components style with `dark:`, so make
+   that variant follow the class on <html> instead of the visitor's OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+   Colour tokens are generated from config/theme.ts and injected in <head>
+   as --obsidian, --charcoal, --stone, --accent, --ivory.
+   Everything below derives from those variables, so no component hardcodes a colour.
+------------------------------------------------------------------- */
+
+@theme inline {
+  --color-obsidian: var(--obsidian);
+  --color-charcoal: var(--charcoal);
+  --color-stone: var(--stone);
+  --color-accent: var(--accent);
+  --color-ivory: var(--ivory);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent-soft: var(--accent-soft);
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+}
+
+:root {
+  --surface: color-mix(in oklab, var(--charcoal) 14%, var(--obsidian));
+  --surface-2: color-mix(in oklab, var(--charcoal) 30%, var(--obsidian));
+  --line: color-mix(in oklab, var(--stone) 22%, transparent);
+  --line-strong: color-mix(in oklab, var(--stone) 42%, transparent);
+  /* Accent as readable text/link colour: oxblood lifted toward ivory */
+  --accent-soft: color-mix(in oklab, var(--accent) 45%, var(--ivory));
+  color-scheme: dark;
+}
+
+html {
+  background: var(--obsidian);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--obsidian);
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ivory);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ivory);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  background: var(--ivory);
+  color: var(--obsidian);
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Thin, quiet scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* ------------------------------------------------------------------
+   Typography helpers
+------------------------------------------------------------------- */
+.display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.prose-measure {
+  max-width: 62ch;
+}
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--stone);
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------
+   Noise surface (grain)
+------------------------------------------------------------------- */
+.noise-surface {
+  position: relative;
+  isolation: isolate;
+}
+.noise-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--noise-opacity, 0.07);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: var(--noise-size, 180px);
+  mix-blend-mode: overlay;
+}
+/* Drift is a transform on an oversized layer (compositor-only), not a background-position
+   animation, which repainted the whole hero on every step. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .noise-surface[data-animating="true"] {
+    overflow: clip;
+  }
+  .noise-surface[data-animating="true"] .noise-layer {
+    inset: -80px;
+    will-change: transform;
+    animation: noise-drift 1.6s steps(8) infinite;
+  }
+}
+@keyframes noise-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-40px, 30px, 0); }
+  50% { transform: translate3d(30px, -50px, 0); }
+  75% { transform: translate3d(-60px, -20px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ------------------------------------------------------------------
+   Dither (static fallback uses a generated alpha mask tinted by theme colours)
+------------------------------------------------------------------- */
+.dither-static {
+  position: absolute;
+  inset: 0;
+  background-color: var(--stone);
+  opacity: 0.35;
+  -webkit-mask-image: var(--dither-mask);
+  mask-image: var(--dither-mask);
+  -webkit-mask-size: 512px 512px;
+  mask-size: 512px 512px;
+  image-rendering: pixelated;
+}
+
+/* ------------------------------------------------------------------
+   Terminal
+------------------------------------------------------------------- */
+/* The window is embedded in a frame (the MacBook screen, or .term-frame on small screens),
+   so it draws no border or shadow of its own. Font size comes from --term-fs on an ancestor. */
+.term-window {
+  position: relative;
+  background: color-mix(in oklab, var(--obsidian) 94%, transparent);
+  overflow: hidden;
+}
+.term-frame {
+  border: 1px solid var(--line-strong);
+  border-radius: 0.9rem;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.8), inset 0 1px 0 color-mix(in oklab, var(--ivory) 6%, transparent);
+}
+.term-window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(var(--term-glow, 340px) circle at var(--tx, 50%) var(--ty, 0%), color-mix(in oklab, var(--accent) 38%, transparent), transparent 70%);
+  transition: opacity 0.3s;
+  z-index: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .term-window:hover::before {
+    opacity: 0.55;
+  }
+}
+.term-body {
+  font-family: var(--font-mono);
+  font-size: inherit;
+  line-height: 1.6;
+}
+.term-node {
+  animation: term-in 0.24s ease-out both;
+  animation-delay: calc(min(var(--i, 0), 14) * 24ms);
+}
+@keyframes term-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+.term-cursor {
+  background: var(--ivory);
+  color: var(--obsidian);
+  display: inline-block;
+  min-width: 0.6em;
+  outline: 1px solid var(--ivory);
+}
+.term-cursor-idle {
+  background: transparent;
+  color: inherit;
+}
+.term-cursor-blink {
+  animation: cursor-blink 1.1s steps(1) infinite;
+}
+@keyframes cursor-blink {
+  50% { background: transparent; color: var(--ivory); }
+}
+.tok-heading { color: var(--ivory); font-weight: 600; }
+.tok-key { color: var(--accent-soft); }
+.tok-url { color: var(--accent-soft); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--line-strong); }
+.tok-code { color: var(--ivory); background: color-mix(in oklab, var(--stone) 14%, transparent); border-radius: 3px; padding: 0 0.25em; }
+.tok-strong { font-weight: 700; }
+.tok-marker { color: var(--accent-soft); }
+.tok-muted { color: var(--stone); }
+
+/* ------------------------------------------------------------------
+   Split-flap board
+------------------------------------------------------------------- */
+.flap-board {
+  /* 12 tiles + gaps + padding + border ≈ 14 tile widths; sized from the wrapper (container query). */
+  --tile-w: clamp(1.1rem, calc((100cqw - 4px) / 14), 3.4rem);
+  --flap-ms: 68ms;
+  display: grid;
+  gap: calc(var(--tile-w) * 0.16);
+  padding: calc(var(--tile-w) * 0.34);
+  border: 1px solid var(--line-strong);
+  border-radius: 0.8rem;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--charcoal) 22%, var(--obsidian)), var(--obsidian));
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.flap-row {
+  display: flex;
+  gap: calc(var(--tile-w) * 0.12);
+}
+.flap {
+  position: relative;
+  width: var(--tile-w);
+  height: calc(var(--tile-w) * 1.5);
+  perspective: 700px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: calc(var(--tile-w) * 1.05);
+  color: var(--ivory);
+}
+.flap-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: var(--surface-2);
+  backface-visibility: hidden;
+}
+.flap-top {
+  top: 0;
+  height: calc(50% - 0.5px);
+  border-radius: 0.28rem 0.28rem 0 0;
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.5);
+}
+.flap-bottom {
+  bottom: 0;
+  height: calc(50% - 0.5px);
+  border-radius: 0 0 0.28rem 0.28rem;
+  background: color-mix(in oklab, var(--surface-2) 88%, var(--obsidian));
+}
+.flap-glyph {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(var(--tile-w) * 1.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.flap-top .flap-glyph { top: 0; }
+.flap-bottom .flap-glyph { bottom: 0; }
+.flap-flip-top {
+  z-index: 3;
+  transform-origin: 50% 100%;
+  animation: flap-down var(--flap-ms) ease-in forwards;
+}
+.flap-flip-bottom {
+  z-index: 2;
+  transform-origin: 50% 0%;
+  transform: rotateX(90deg);
+  animation: flap-up var(--flap-ms) ease-out calc(var(--flap-ms) * 0.9) forwards;
+}
+@keyframes flap-down { to { transform: rotateX(-90deg); } }
+@keyframes flap-up { from { transform: rotateX(90deg); } to { transform: rotateX(0deg); } }
+
+/* ------------------------------------------------------------------
+   Reveal: content must stay visible without JavaScript (see noscript rule in layout)
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Safe-area helpers */
+.pb-dock {
+  padding-bottom: calc(6.25rem + env(safe-area-inset-bottom));
+}
