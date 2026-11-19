@@ -13,7 +13,7 @@ import { useFinePointer, usePrefersReducedMotion } from "@/lib/hooks";
 import { cn, isActivePath } from "@/lib/utils";
 
 const BASE = 44;
-const MAX = 64;
+const MAX_SCALE = 1.38;
 
 /** Shared by every dock item: which label is showing, and where each item's centre is. */
 interface DockCtx {
@@ -88,6 +88,19 @@ export function FloatingDock() {
 
   const ctx: DockCtx = { mouseX, magnify, tip, setTip, centers };
 
+  // The pill (background) grows upward with the tallest magnified icon so icons never leave it.
+  const grow = useTransform(mouseX, (x) => {
+    if (!Number.isFinite(x)) return 0;
+    let max = 1;
+    for (const c of Object.values(centers.current)) {
+      const t = Math.max(0, 1 - Math.abs(x - c) / 120);
+      max = Math.max(max, 1 + (MAX_SCALE - 1) * t);
+    }
+    return BASE * (max - 1);
+  });
+  const pillGrow = useSpring(grow, { mass: 0.1, stiffness: 220, damping: 18 });
+  const pillHeight = useTransform(pillGrow, (g) => BASE + 16 + g);
+
   return (
     <nav
       aria-label="Primary"
@@ -100,8 +113,13 @@ export function FloatingDock() {
         onPointerMove={magnify ? onPointerMove : undefined}
         onPointerLeave={clear}
         onPointerCancel={clear}
-        className="pointer-events-auto relative flex max-w-full items-end gap-1.5 rounded-2xl border border-line-strong bg-obsidian/85 px-2 py-2 shadow-[0_20px_50px_-20px_rgb(0_0_0/0.9)] backdrop-blur-sm"
+        className="pointer-events-auto relative isolate flex max-w-full items-end gap-1.5 px-2.5 py-2 sm:gap-3"
       >
+        <motion.div
+          aria-hidden
+          style={magnify ? { height: pillHeight } : { height: BASE + 16 }}
+          className="absolute inset-x-0 bottom-0 -z-10 rounded-[1.4rem] border border-line-strong bg-obsidian/70 shadow-[0_20px_50px_-20px_rgb(0_0_0/0.9),inset_0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-xl"
+        />
         {entries.map((entry) => {
           if (entry.type === "theme") {
             return <DockButton key={entry.id} ctx={ctx} id={entry.id} label={entry.label} icon={entry.icon} onClick={() => setThemeOpen((o) => !o)} expanded={themeOpen} />;
@@ -115,15 +133,19 @@ export function FloatingDock() {
   );
 }
 
-function useSize(ctx: DockCtx, id: string) {
+/**
+ * Magnification is a transform (scale), not a width: each item sits in a fixed 44px slot, so the
+ * dock never changes width or shifts under the pointer, and the measured centres stay valid.
+ */
+function useScale(ctx: DockCtx, id: string) {
   // Infinity when the pointer is away (Infinity - Infinity would be NaN, so guard it)
   const distance = useTransform(ctx.mouseX, (x) => {
     const c = ctx.centers.current[id];
     return Number.isFinite(x) && c !== undefined ? x - c : Infinity;
   });
-  const raw = useTransform(distance, [-130, 0, 130], [BASE, MAX, BASE]);
-  const sized = useSpring(raw, { mass: 0.1, stiffness: 160, damping: 14 });
-  return ctx.magnify ? sized : BASE;
+  const raw = useTransform(distance, [-120, 0, 120], [1, MAX_SCALE, 1]);
+  const sized = useSpring(raw, { mass: 0.1, stiffness: 220, damping: 18 });
+  return ctx.magnify ? sized : 1;
 }
 
 /** Hover/focus wiring for one item. Only a real mouse hover or keyboard focus shows a label. */
@@ -142,7 +164,7 @@ function tipHandlers(ctx: DockCtx, id: string, suppress = false) {
 }
 
 function DockLink({ entry, ctx, active }: { entry: Extract<DockEntry, { type: "link" }>; ctx: DockCtx; active: boolean }) {
-  const size = useSize(ctx, entry.id);
+  const scale = useScale(ctx, entry.id);
   const tip = tipHandlers(ctx, entry.id);
   const cls = cn(
     "relative flex size-full items-center justify-center rounded-xl border text-ivory transition-colors",
@@ -150,13 +172,14 @@ function DockLink({ entry, ctx, active }: { entry: Extract<DockEntry, { type: "l
   );
   const inner = <Icon name={entry.icon} size={20} />;
   return (
-    <motion.div
+    <div
       data-dock-id={entry.id}
-      style={{ width: size, height: size }}
       onPointerEnter={tip.onPointerEnter}
       onPointerLeave={tip.onPointerLeave}
-      className={cn("relative aspect-square shrink-0", entry.desktopOnly && "hidden sm:block")}
+      style={{ width: BASE, height: BASE }}
+      className={cn("relative shrink-0", entry.desktopOnly && "hidden sm:block")}
     >
+      <motion.div style={{ scale, transformOrigin: "50% 100%" }} className="size-full will-change-transform">
       {entry.external ? (
         <a href={entry.href} target="_blank" rel="noopener noreferrer" aria-label={`${entry.label} (opens in a new tab)`} className={cls} onFocus={tip.onFocus} onBlur={tip.onBlur}>
           {inner}
@@ -166,17 +189,19 @@ function DockLink({ entry, ctx, active }: { entry: Extract<DockEntry, { type: "l
           {inner}
         </Link>
       )}
-      {active && <span aria-hidden className="absolute -bottom-1.5 left-1/2 h-1 w-3 -translate-x-1/2 rounded-full bg-ivory" />}
+      </motion.div>
+      {active && <span aria-hidden className="absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-ivory" />}
       <Tooltip show={ctx.tip === entry.id} text={entry.label} />
-    </motion.div>
+    </div>
   );
 }
 
 function DockButton({ ctx, id, label, icon, onClick, expanded }: { ctx: DockCtx; id: string; label: string; icon: Extract<DockEntry, { type: "theme" }>["icon"]; onClick: () => void; expanded: boolean }) {
-  const size = useSize(ctx, id);
+  const scale = useScale(ctx, id);
   const tip = tipHandlers(ctx, id, expanded);
   return (
-    <motion.div data-dock-id={id} style={{ width: size, height: size }} onPointerEnter={tip.onPointerEnter} onPointerLeave={tip.onPointerLeave} className="relative aspect-square shrink-0">
+    <div data-dock-id={id} style={{ width: BASE, height: BASE }} onPointerEnter={tip.onPointerEnter} onPointerLeave={tip.onPointerLeave} className="relative shrink-0">
+      <motion.div style={{ scale, transformOrigin: "50% 100%" }} className="size-full will-change-transform">
       <button
         type="button"
         aria-label={label}
@@ -195,8 +220,9 @@ function DockButton({ ctx, id, label, icon, onClick, expanded }: { ctx: DockCtx;
       >
         <Icon name={icon} size={20} />
       </button>
+      </motion.div>
       <Tooltip show={ctx.tip === id && !expanded} text={label} />
-    </motion.div>
+    </div>
   );
 }
 
@@ -210,7 +236,7 @@ function Tooltip({ show, text }: { show: boolean; text: string }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 4 }}
           transition={{ duration: 0.12 }}
-          className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-line-strong bg-obsidian px-2 py-1 font-mono text-[0.7rem] text-ivory sm:block"
+          className="pointer-events-none absolute -top-12 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-line-strong bg-obsidian px-2 py-1 font-mono text-[0.7rem] text-ivory sm:block"
         >
           {text}
         </motion.span>

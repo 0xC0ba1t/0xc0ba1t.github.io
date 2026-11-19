@@ -11,6 +11,8 @@ interface Props {
   width?: number;
   height?: number;
   fontSize?: number;
+  /** horizontal alignment of the text inside the viewBox */
+  align?: "center" | "start";
 }
 
 /**
@@ -18,7 +20,7 @@ interface Props {
  * through a radial mask). The ivory fill is always visible, so touch devices and
  * keyboard users see the same readable heading; hover only adds the highlight.
  */
-export function TextHoverEffect({ text, className, width = 520, height = 140, fontSize = 112 }: Props) {
+export function TextHoverEffect({ text, className, width = 520, height = 140, fontSize = 112, align = "center" }: Props) {
   const uid = useId().replace(/:/g, "");
   const svgRef = useRef<SVGSVGElement>(null);
   const maskRef = useRef<SVGRadialGradientElement>(null);
@@ -41,9 +43,9 @@ export function TextHoverEffect({ text, className, width = 520, height = 140, fo
   };
 
   const textProps = {
-    x: "50%",
+    x: align === "start" ? "0%" : "50%",
     y: "54%",
-    textAnchor: "middle" as const,
+    textAnchor: (align === "start" ? "start" : "middle") as "start" | "middle",
     dominantBaseline: "middle" as const,
     style: { fontFamily: "var(--font-serif)", fontSize, letterSpacing: "-0.02em" },
   };

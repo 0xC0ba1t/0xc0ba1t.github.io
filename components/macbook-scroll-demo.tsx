@@ -21,7 +21,7 @@ import { useMediaQuery, usePrefersReducedMotion } from "@/lib/hooks";
 const OPEN_SCALE = 1.5;
 
 export default function MacbookScrollDemo() {
-  const wide = useMediaQuery("(min-width: 768px)", false);
+  const wide = useMediaQuery("(min-width: 1024px)", false);
   const reduce = usePrefersReducedMotion();
   const cfg = home.terminalShowcase;
 

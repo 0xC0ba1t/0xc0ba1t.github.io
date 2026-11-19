@@ -40,6 +40,10 @@ export function Terminal({ className }: { className?: string }) {
   const [phase, setPhase] = useState<Phase>("boot");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [announce, setAnnounce] = useState("");
+  // Fine-pointer devices: the output only captures the wheel once the terminal has focus, so
+  // scrolling the page with the cursor over it never gets trapped. Touch devices always scroll it
+  // (with normal scroll chaining at the ends).
+  const [active, setActive] = useState(false);
 
   const cwdRef = useRef("~");
   const [cwd, setCwdState] = useState("~");
@@ -342,6 +346,11 @@ export function Terminal({ className }: { className?: string }) {
       className={cn("term-window flex h-full min-h-0 w-full flex-col", className)}
       style={{ ["--term-glow" as string]: `${motionConfig.pointer.terminalGlowRadius}px`, fontSize: "var(--term-fs, 0.8125rem)" }}
       onPointerMove={onPointerMove}
+      data-active={active}
+      onFocusCapture={() => setActive(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setActive(false);
+      }}
     >
       {/* title bar */}
       <div className="relative z-10 flex shrink-0 items-center gap-[0.9em] border-b border-line px-[1em] py-[0.6em]">
@@ -375,7 +384,7 @@ export function Terminal({ className }: { className?: string }) {
         aria-label="Terminal output"
         aria-live="off"
         onClick={focusInput}
-        className="term-body relative z-10 min-h-0 flex-1 cursor-text overflow-y-auto overscroll-contain px-[1.1em] py-[0.8em]"
+        className="term-body relative z-10 min-h-0 flex-1 cursor-text px-[1.1em] py-[0.8em]"
       >
         <div className="space-y-[0.5em]">
           {entries.map((entry) => (

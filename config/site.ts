@@ -5,8 +5,8 @@ export const site = {
   handle: "c0ba1t",
   /** canonical origin — no trailing slash */
   url: "https://c0ba1t.is-a.dev",
-  title: "Aditya Patil — c0ba1t",
-  titleTemplate: "%s — c0ba1t",
+  title: "Aditya Patil · c0ba1t",
+  titleTemplate: "%s · c0ba1t",
   description:
     "Portfolio of Aditya Patil (c0ba1t): aspiring ML engineer working across PyTorch, Rust, systems programming, hardware and networking.",
   locale: "en_GB",

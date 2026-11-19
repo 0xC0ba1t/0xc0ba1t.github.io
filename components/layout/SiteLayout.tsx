@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { FloatingDock } from "@/components/dock/FloatingDock";
 import { PointerGlow } from "@/components/providers/PointerGlow";
 import { Footer } from "./Footer";
+import { MenuBar, WindowChrome } from "./MenuBar";
 
 /** Shared chrome: skip link, ambient glow, content, footer, bottom dock. */
 export function SiteLayout({ children }: { children: ReactNode }) {
@@ -10,8 +11,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <a href="#main" className="skip-link">
         Skip to content
       </a>
+      <MenuBar />
       <PointerGlow />
-      <div className="relative z-10 flex min-h-dvh flex-col">
+      <div className="relative z-10 flex min-h-dvh flex-col pt-7">
+        <WindowChrome />
         <main id="main" className="flex-1">
           {children}
         </main>

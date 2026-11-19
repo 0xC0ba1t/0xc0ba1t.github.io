@@ -40,6 +40,7 @@
 html {
   background: var(--obsidian);
   scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -192,9 +193,18 @@ body {
   }
 }
 .term-body {
+  overflow-y: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   font-family: var(--font-mono);
   font-size: inherit;
   line-height: 1.6;
+}
+@media (hover: hover) and (pointer: fine) {
+  .term-window[data-active="false"] .term-body {
+    overflow-y: hidden; /* wheel passes through to the page until the terminal is focused */
+  }
 }
 .term-node {
   animation: term-in 0.24s ease-out both;

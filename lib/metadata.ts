@@ -14,7 +14,8 @@ export function createMetadata({ title, description, path }: PageMeta): Metadata
   const desc = description ?? site.description;
   const url = `${site.url}${path}`;
   return {
-    title: fullTitle,
+    // the root layout's title template adds the suffix; passing fullTitle here doubled it
+    title: title ? title : { absolute: site.title },
     description: desc,
     alternates: { canonical: url },
     openGraph: {

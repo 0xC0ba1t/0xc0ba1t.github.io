@@ -11,9 +11,9 @@ export const dither = {
   animated: true,
   /** animation speed multiplier */
   speed: 0.6,
-  maxFps: 30,
+  maxFps: 24,
   /** cap on devicePixelRatio used by the canvas */
-  pixelRatioCap: 1.5,
+  pixelRatioCap: 1,
   /** 0–1 share of lit cells tinted with the accent colour (oxblood by default) */
   accentAmount: 0.07,
   /** 0–1 how far the field shifts toward the pointer (desktop only) */
@@ -26,7 +26,7 @@ export const noise = {
   /** 0–1 opacity of the grain overlay */
   intensity: 0.07,
   /** slow drift of the grain on desktop; always static on mobile / reduced motion */
-  animating: true,
+  animating: false,
   /** px size of one grain tile */
   tileSize: 180,
 } as const;

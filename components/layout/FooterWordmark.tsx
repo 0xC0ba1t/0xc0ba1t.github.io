@@ -10,8 +10,8 @@ export function FooterWordmark() {
     return <p className="display text-6xl text-ivory sm:text-8xl">{site.handle}</p>;
   }
   return (
-    <div className="-mx-2 max-w-xl">
-      <TextHoverEffect text={site.handle} width={520} height={150} fontSize={120} />
+    <div className="max-w-xl">
+      <TextHoverEffect text={site.handle} width={520} height={150} fontSize={120} align="start" />
     </div>
   );
 }

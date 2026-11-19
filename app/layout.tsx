@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: site.title, template: site.titleTemplate },
   description: site.description,
+  verification: { google: "RgSQHn9whDq5WIE_iSkQONz9uE4YJ2jUAIGLHhfGqv8" },
   authors: [{ name: site.author.name, url: site.url }],
   alternates: { canonical: `${site.url}/` },
   openGraph: {
